@@ -1,8 +1,10 @@
 import network
 import socket
+from secrets import secrets
 
-ssid = ''
-password = ''
+# WiFi settings
+ssid = secrets['WIFI_SSID']
+password = secrets['WIFI_PASSWORD']
 
 station = network.WLAN(network.STA_IF)
 station.active(True)
@@ -21,3 +23,4 @@ s.send(b'GET / HTTP/1.1\r\nHost: micropython.org\r\n\r\n')
 data = s.recv(1000)
 print(data)
 s.close()
+
