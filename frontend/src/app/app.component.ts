@@ -1,5 +1,9 @@
 import { LineChartComponent } from './line-chart/line-chart.component';
+import { HeaderComponent } from './header/header.component';
+import { FormComponent } from './form/form.component';
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { WebSocketService } from './services/WebSocketService';
 
 interface Feed {
   id: number;
@@ -18,19 +22,17 @@ interface Parameters {
 type DataPoint = [string, string];
 
 interface ChartFeedData {
-    feed: Feed;
-    parameters: Parameters;
-    columns: string[];
-    data: DataPoint[];
+  feed: Feed;
+  parameters: Parameters;
+  columns: string[];
+  data: DataPoint[];
 }
 
 interface QueryObject {
   start_time: string;
   end_time: string;
   resolution: number;
-  hours: number;
   field: string;
-  raw: boolean;
 }
 
 // Define interface for line chart
@@ -47,33 +49,31 @@ interface Dataset {
   data: number[];
 }
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [LineChartComponent],
+  imports: [LineChartComponent, HeaderComponent, FormComponent],
+  providers: [DatePipe],
   standalone: true,
 })
 export class AppComponent implements OnInit {
   temperatureData!: ChartFeedData;
   humidityData!: ChartFeedData;
-  queryObject!: QueryObject;
-  chartData!: ChartData;
+  queryObject: QueryObject | null | undefined;
+  tempChartData!: ChartData;
+  humChartData!: ChartData;
+  tempChartId: string = 'temp';
+  humChartId: string = 'hum';
+  private intervalId: any;
+
+  constructor(
+    private datePipe: DatePipe,
+    private webSocketService: WebSocketService
+  ) {}
 
   async ngOnInit() {
-    this.temperatureData = await this.getMeasurements(
-      'da222xg',
-      'picow.temperature'
-    ); //dev
-    this.humidityData = await this.getMeasurements('da222xg', 'picow.humidity');
-
-    if (this.temperatureData) {
-      this.chartData = this.mapResponseToChartData(this.temperatureData);
-    } else {
-      this.chartData = { labels: [], datasets: [] }; // or any default value
-    }
-
+    this.submitFormData(null);
   }
 
   async getMeasurements(
@@ -91,16 +91,11 @@ export class AppComponent implements OnInit {
       if (this.queryObject?.end_time)
         params.set('end_time', this.queryObject?.end_time);
 
-      if (this.queryObject?.resolution)
+      if (this.queryObject?.resolution) {
         params.set('resolution', this.queryObject?.resolution.toString());
-
-      if (this.queryObject?.hours)
-        params.set('hours', this.queryObject?.hours.toString());
+      }
 
       if (this.queryObject?.field) params.set('field', this.queryObject?.field);
-
-      if (this.queryObject?.raw)
-        params.set('raw', this.queryObject?.raw.toString());
 
       const response = await fetch(`${url}?${params.toString()}`);
 
@@ -115,13 +110,24 @@ export class AppComponent implements OnInit {
     }
   }
 
-  mapResponseToChartData(response: ChartFeedData): ChartData {
-    const labels: string[] = response.data.map(
-      (dataPoint) => dataPoint[0]
-    );
+  async mapResponseToChartData(response: ChartFeedData): Promise<ChartData> {
+    const labels: string[] = response.data.map((dataPoint) => {
+      // Extract the date and time parts of the timestamp
+      const date = new Date(dataPoint[0]);
+      const formattedDate = date.toISOString().split('T')[0]; // yyyy-mm-dd
+      const time = date.toISOString().split('T')[1].substring(0, 5); // hh:mm
+      return `${formattedDate} ${time}`;
+    });
+
+    let unit;
+    if (response.feed.name === 'temperature') {
+      unit = '°C';
+    } else if (response.feed.name === 'humidity') {
+      unit = '%';
+    }
     const datasets: Dataset[] = [
       {
-        label: response.feed.name,
+        label: response.feed.name + ` (${unit})`,
         data: response.data.map((dataPoint) => +dataPoint[1]),
       },
     ];
@@ -129,4 +135,41 @@ export class AppComponent implements OnInit {
   }
 
   title = 'frontend';
+
+  async submitFormData(data: any) {
+    this.queryObject = await this.mapToQueryObject(data);
+    this.temperatureData = await this.getMeasurements(
+      'da222xg',
+      'picow.temperature'
+    ); //dev
+    this.humidityData = await this.getMeasurements('da222xg', 'picow.humidity');
+
+    if (this.temperatureData) {
+      this.tempChartData = await this.mapResponseToChartData(
+        this.temperatureData
+      );
+    } else {
+      this.tempChartData = { labels: [], datasets: [] }; //default value
+    }
+
+    if (this.humidityData) {
+      this.humChartData = await this.mapResponseToChartData(this.humidityData);
+    } else {
+      this.humChartData = { labels: [], datasets: [] }; //default value
+    }
+  }
+
+  async mapToQueryObject(data: any): Promise<QueryObject | undefined> {
+    if (!data) return;
+
+    const queryObject: QueryObject = {
+      ...data,
+      start_time:
+        this.datePipe.transform(data.start_time, 'yyyy-MM-ddTHH:mm:ss') ?? '',
+      end_time:
+        this.datePipe.transform(data.end_time, 'yyyy-MM-ddTHH:mm:ss') ?? '',
+    };
+
+    return queryObject;
+  }
 }

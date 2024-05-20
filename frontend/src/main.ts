@@ -14,12 +14,14 @@
   import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
   import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
   bootstrapApplication(AppComponent, {
     providers: [
       importProvidersFrom(BrowserModule, AppRoutingModule),
       provideAnimationsAsync(),
+      provideNativeDateAdapter(),
       provideHttpClient(withInterceptorsFromDi()),
-      provideCharts(withDefaultRegisterables()),
+      provideCharts(withDefaultRegisterables()), provideAnimationsAsync(),
     ],
   }).catch((err) => console.error(err));

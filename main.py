@@ -1,4 +1,4 @@
-from machine import Pin
+from machine import Pin, reset
 from time import sleep
 from dht import DHT22
 import ujson
@@ -71,5 +71,8 @@ while True:
     break
   except Exception as e:
     print('An error occured:', e)
-      
+    print('Resetting...')
+    sleep(5)
+    reset()
+
 

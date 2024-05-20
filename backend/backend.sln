@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend", "backend.csproj", "{CC92523C-5EB3-4B7F-A1EF-757FA6192191}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend", "backend.csproj", "{CC92523C-5EB3-4B7F-A1EF-757FA6192191}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontend", "..\frontend\frontend.esproj", "{1676AF5D-BECD-45CA-A6E9-0565DF970811}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,12 @@ Global
 		{CC92523C-5EB3-4B7F-A1EF-757FA6192191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC92523C-5EB3-4B7F-A1EF-757FA6192191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC92523C-5EB3-4B7F-A1EF-757FA6192191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1676AF5D-BECD-45CA-A6E9-0565DF970811}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

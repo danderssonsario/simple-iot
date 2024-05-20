@@ -1,6 +1,6 @@
 ﻿namespace backend.DTOs
 {
-    public class RecordDTO
+    public class MeasurementDTO
     {
         public required string Id { get; set; }
         public required string Value { get; set; }

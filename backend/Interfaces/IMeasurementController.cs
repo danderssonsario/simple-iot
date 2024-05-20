@@ -2,12 +2,12 @@
 
 namespace backend.Interfaces
 {
-    public interface ITemperatureController
+    public interface IMeasurementController
     {
         public List<MeasurementDTO> Get();
         public MeasurementDTO Get(int id);
         public List<ChartDataDTO> GetChartData();
         public MeasurementDTO GetLatest();
-
+        public List<MeasurementDTO> GetTemperature();
     }
 }

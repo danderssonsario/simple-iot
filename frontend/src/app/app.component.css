@@ -1,22 +1,20 @@
-﻿:host {
-    max-width: 1280px;
-    padding: 2rem;
-    text-align: center;
+﻿.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-tr:nth-child(even) {
-    background: #F2F2F2;
+app-header {
+    width: 100vw;
 }
 
-tr:nth-child(odd) {
-    background: #FFF;
+app-form, app-line-chart{
+    width: 70%;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
 
-table {
-    margin: 0 auto;
+* {
+ margin: 0;
+ padding: 0;
 }

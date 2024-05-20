@@ -1,1 +1,6 @@
-﻿<app-line-chart [chartData]="chartData"></app-line-chart>
+﻿<div class="container">
+<app-header></app-header>
+<app-form (submitEvent)="submitFormData($event)"></app-form>
+<app-line-chart [id]="tempChartId" [humData]="humChartData" [tempData]="tempChartData"></app-line-chart>
+
+</div>

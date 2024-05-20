@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "../../../Documents/LNU/1dv027/assignment-iot"
+		}
+	],
+	"settings": {
+		"python.languageServer": "Pylance"
+	}
+}

@@ -19,16 +19,28 @@ interface Dataset {
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.css'],
-  standalone: true
+  standalone: true,
 })
 export class LineChartComponent implements OnChanges {
   /**
    * Input data for the line chart.
    */
-  @Input() chartData: ChartData = {
+  @Input() humData: ChartData = {
     labels: [],
-    datasets: []
+    datasets: [],
   };
+
+  @Input() tempData: ChartData = {
+    labels: [],
+    datasets: [],
+  };
+
+  @Input() id:
+    | string
+    /**
+     * The Chart.js instance for the line chart.
+     */
+    | undefined;
 
   /**
    * The Chart.js instance for the line chart.
@@ -39,13 +51,22 @@ export class LineChartComponent implements OnChanges {
    * Initializes the line chart when the component is created.
    */
   ngOnInit(): void {
-    console.log(this.chartData)
-    const ctx = document.getElementById('line-chart') as HTMLCanvasElement;
+    const ctx = document.querySelector('canvas') as HTMLCanvasElement;
+    console.log(this.tempData)
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: this.chartData?.labels,
-        datasets: this.chartData?.datasets,
+        labels: [],
+        datasets: [
+          {
+            label: '',
+            data: [],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
       },
     });
   }
@@ -55,12 +76,22 @@ export class LineChartComponent implements OnChanges {
    * @param changes - Object containing the changed properties.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['chartData'] && this.chartData) {
-      if (this.chart) {
-        this.chart.data.labels = this.chartData.labels;
-        this.chart.data.datasets = this.chartData.datasets;
-        this.chart.update();
-      }
+    if (changes['tempData'] && this.tempData || changes['humData'] && this.humData && this.chart) {
+      // Combine the labels and datasets from tempData and humData
+      const combinedLabels =
+        this.tempData.labels.length > this.humData.labels.length
+          ? this.tempData.labels
+          : this.humData.labels;
+
+      // Merge the datasets
+      const combinedDatasets = [
+        ...this.tempData.datasets,
+        ...this.humData.datasets,
+      ];
+
+      this.chart.data.labels = combinedLabels;
+      this.chart.data.datasets = combinedDatasets;
+      this.chart.update();
     }
   }
 }
