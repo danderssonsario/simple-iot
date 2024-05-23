@@ -120,6 +120,9 @@ While this setup is suitable for development and testing purposes, it can also b
 - **Ease of Use**: Adafruit IO provides a user-friendly interface for managing IoT devices, creating dashboards, and visualizing sensor data.
 - **MQTT Integration**: MQTT is a lightweight and efficient protocol for IoT communication. Adafruit IO supports MQTT, enabling seamless integration with MicroPython on the Raspberry Pi Pico.
 
+### The web app
+The web app is deployed using Netlify at the url: [https://extraordinary-melba-f492c5.netlify.app/](https://extraordinary-melba-f492c5.netlify.app/)
+
 ## Code examples
 ```python
 def mqtt_callback(topic, msg):
