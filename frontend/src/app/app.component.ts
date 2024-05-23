@@ -3,7 +3,6 @@ import { HeaderComponent } from './header/header.component';
 import { FormComponent } from './form/form.component';
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { WebSocketService } from './services/WebSocketService';
 
 interface Feed {
   id: number;
@@ -69,7 +68,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private datePipe: DatePipe,
-    private webSocketService: WebSocketService
   ) {}
 
   async ngOnInit() {
