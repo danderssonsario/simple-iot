@@ -1,11 +1,12 @@
 from machine import Pin, reset
-from time import sleep
+from time import sleep, time
 from dht import DHT22
 import ujson
 import network
 import ubinascii
 from secrets import secrets
 from umqtt.simple import MQTTClient
+import uselect
 
 # MQTT settings
 MQTT_BROKER = secrets['MQTT_BROKER']
@@ -18,7 +19,7 @@ MQTT_USERNAME = secrets['MQTT_USERNAME']
 MQTT_PASSWORD = secrets['MQTT_PASSWORD']
 
 # DHT22 sensor pin
-DHT_PIN = 15  # Pin GP4 on Raspberry Pi Pico W
+DHT_PIN = 15  # Pin GP15 on Raspberry Pi Pico W
 
 # Initialize DHT22 sensor
 dht = DHT22(Pin(DHT_PIN))
@@ -41,38 +42,59 @@ mqtt_client.connect()
 mqtt_client.subscribe(LED_FEED)
 
 # Sync led with MQTT
-led.value(0)
-mqtt_client.publish(LED_FEED, '1')
+led.value(1)
+mqtt_client.publish(LED_FEED, '0')
+
+# Counter for OSError resets
+reset_counter = 0
+MAX_RESETS = 3
+
+# Interval for sensor reading (in seconds)
+SENSOR_READ_INTERVAL = 10
+last_sensor_read_time = time()
+
+# Create a poll object
+poll = uselect.poll()
+poll.register(mqtt_client.sock, uselect.POLLIN)
 
 # Main loop
 while True:
-  try:
-      # Read temperature and humidity data from DHT22 sensor
-      dht.measure()
-      sleep(2)
-      temperature = dht.temperature()
-      humidity = dht.humidity()
-      print("Temperature:", temperature, "°C")
-      print("Humidity:", humidity, "%")
+    try:
+        # Wait for incoming MQTT messages or timeout
+        events = poll.poll(6000)  # timeout in milliseconds
+        if events:
+            mqtt_client.check_msg()
 
-      # Prepare data in JSON format
-      temperature_data = {"value": temperature}
-      humidity_data = {"value": humidity}
+        # Read sensor data at intervals
+        current_time = time()
+        if current_time - last_sensor_read_time >= SENSOR_READ_INTERVAL:
+            last_sensor_read_time = current_time
 
-      mqtt_client.publish(TEMPERATURE_FEED, ujson.dumps(temperature_data))
-      mqtt_client.publish(HUMIDITY_FEED, ujson.dumps(humidity_data))
-      
-      mqtt_client.check_msg()
+            # Read temperature and humidity data from DHT22 sensor
+            dht.measure()
+            temperature = dht.temperature()
+            humidity = dht.humidity()
+            print("Temperature:", temperature, "°C")
+            print("Humidity:", humidity, "%")
 
-      # Sleep for 60 seconds before next reading
-      sleep(3)
-  except OSError as e:
-    print('Failed to read sensor,')
-    break
-  except Exception as e:
-    print('An error occured:', e)
-    print('Resetting...')
-    sleep(5)
-    reset()
+            # Prepare data in JSON format
+            temperature_data = {"value": temperature}
+            humidity_data = {"value": humidity}
 
+            mqtt_client.publish(TEMPERATURE_FEED, ujson.dumps(temperature_data))
+            mqtt_client.publish(HUMIDITY_FEED, ujson.dumps(humidity_data))
+
+    except OSError as e:
+        print('Failed to read sensor,')
+        print('Resetting...')
+        reset_counter += 1
+        if reset_counter >= MAX_RESETS:
+            print(f"Failed {MAX_RESETS} times. Exiting...")
+            break
+        sleep(5)
+    except Exception as e:
+        print('An error occurred:', e)
+        print('Resetting...')
+        sleep(5)
+        reset()
 
