@@ -61,7 +61,7 @@ poll.register(mqtt_client.sock, uselect.POLLIN)
 while True:
     try:
         # Wait for incoming MQTT messages or timeout
-        events = poll.poll(6000)  # timeout in milliseconds
+        events = poll.poll(1000)  # timeout in milliseconds
         if events:
             mqtt_client.check_msg()
 
