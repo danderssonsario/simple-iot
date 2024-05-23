@@ -1,6 +1,9 @@
 # Assignment - Track my room
 ### Daniel Andersson | da222xg | approx 40 hours work
 
+## Note
+My 'backend' folder is not really used in this project because: 1. Adafruit's API did not support webhooks the way i anticipated, 2. I want to keep it to work on another solution in the future, but did not have the time to do it now.
+
 This project uses a Raspberry Pi Pico W and a DHT22 sensor to collect temperature and humidity data and transmit it using the MQTT protocol to an Adafruit IO broker. The collected data is then visualized through an Angular-based web frontend, providing users with a clear and interactive dashboard to monitor their environment. Additionally, the system features an LED that can be remotely controlled via MQTT messages.
 
 ## Objective
