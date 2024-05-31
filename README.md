@@ -94,6 +94,10 @@ Thonny is the Integrated Development Environment (IDE) chosen for programming th
 - Connect a GPIO pin (e.g., GP15) of the Raspberry Pi Pico W to the data pin of the DHT22 sensor.
 - Connect the USB cable from the computer to the micro USB port of the Raspberry Pi Pico W.
 
+### Extra: Pictures for help with pins
+Pico: ![pico](./pico.svg)
+DHT22: ![dht](./dht.jpg)
+
 ### Considerations
 This setup is suitable for development and testing purposes.
 
@@ -102,13 +106,6 @@ This setup is suitable for development and testing purposes.
 - The DHT22 sensor has a maximum sampling rate of 0.5 Hz (once every 2 seconds). Ensure that your application can accommodate this delay in sensor readings.
 
 While this setup is suitable for development and testing purposes, it can also be used in production with appropriate considerations for reliability, power efficiency, and environmental conditions. Ensure proper enclosure and protection for outdoor deployments.
-
-* The Raspberry Pi Pico W microcontroller is connected to WiFi.
-* The Raspberry Pi Pico W microcontroller reads the temperature and humidity data of sensor DHT11.
-* The Raspberry Pi Pico W microcontroller sends the temperature and humidity data to the Adafruit MQTT Broker using the MQTT protocol. The data need to be prepared in a JSON format.
-* The Raspberry Pi Pico W microcontroller must be controlled by a button on the Adafruit dashboard i.e. if Rpi Pico W receives the command "ON" or "OFF" on the "LED" topic, the built-in LED of Rpi Pico W must be on or off.
-* Your git repository should include the assignment report, assignment code, and link to your prerecorded presentation file where you show your hardware (picow+wires+sensor) connection, visualization of data in your dashboard, and turn on/off the PicoW LED (MP4 file). 
-* It would be a bonus if you can set up your own MQTT server rather than using Adafruit MQTT Broker.
 
 ## The platform
 - **Micropython**: MicroPython provides a lightweight and efficient programming environment for microcontrollers like the Raspberry Pi Pico. It offers a familiar Python syntax, making it accessible for beginners and experienced developers alike.
@@ -171,3 +168,6 @@ The data is stored 30 days on Adafruit. If more persistent storage are desired, 
 
 ## Final thoughts
 I'm pretty happy with my project. I got something pretty simple but at least it works as desired. Perhaps i will take my chances att further develop this project since it was a very fun one!
+
+## Videolink
+Short DEMO is available [here](https://youtu.be/AWm6Y5YKSDU)
