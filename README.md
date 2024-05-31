@@ -170,4 +170,4 @@ The data is stored 30 days on Adafruit. If more persistent storage are desired, 
 I'm pretty happy with my project. I got something pretty simple but at least it works as desired. Perhaps i will take my chances att further develop this project since it was a very fun one!
 
 ## Videolink
-Short DEMO is available [here](https://youtu.be/AWm6Y5YKSDU).
+Short DEMO is available [here](https://youtu.be/AWm6Y5YKSDU)
